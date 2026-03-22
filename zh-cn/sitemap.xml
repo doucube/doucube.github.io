@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://doucube.github.io/</loc>
-    <lastmod>2020-09-09T00:00:00+00:00</lastmod>
+    <lastmod>2026-03-22T12:32:34+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -16,9 +16,18 @@
                 />
     <xhtml:link
                 rel="alternate"
-                hreflang="zh-cn"
+                hreflang="en-us"
                 href="https://doucube.github.io/"
                 />
+  </url><url>
+    <loc>https://doucube.github.io/post/</loc>
+    <lastmod>2026-03-22T12:32:34+08:00</lastmod>
+  </url><url>
+    <loc>https://doucube.github.io/p/sqlstudy/</loc>
+    <lastmod>2026-03-22T12:32:34+08:00</lastmod>
+  </url><url>
+    <loc>https://doucube.github.io/p/sql-study/</loc>
+    <lastmod>2026-03-21T00:41:31+08:00</lastmod>
   </url><url>
     <loc>https://doucube.github.io/categories/</loc>
     <lastmod>2020-09-09T00:00:00+00:00</lastmod>
@@ -34,14 +43,11 @@
                 />
     <xhtml:link
                 rel="alternate"
-                hreflang="zh-cn"
+                hreflang="en-us"
                 href="https://doucube.github.io/categories/"
                 />
   </url><url>
     <loc>https://doucube.github.io/p/test-chinese/</loc>
-    <lastmod>2020-09-09T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://doucube.github.io/post/</loc>
     <lastmod>2020-09-09T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://doucube.github.io/categories/test/</loc>
@@ -85,14 +91,14 @@
                 />
     <xhtml:link
                 rel="alternate"
-                hreflang="zh-cn"
+                hreflang="en-us"
                 href="https://doucube.github.io/tags/"
                 />
   </url><url>
-    <loc>https://doucube.github.io/tags/themes/</loc>
+    <loc>https://doucube.github.io/categories/themes/</loc>
     <lastmod>2019-03-11T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://doucube.github.io/categories/themes/</loc>
+    <loc>https://doucube.github.io/tags/themes/</loc>
     <lastmod>2019-03-11T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://doucube.github.io/p/placeholder-text/</loc>
@@ -115,6 +121,16 @@
   </url><url>
     <loc>https://doucube.github.io/p/emoji-support/</loc>
     <lastmod>2019-03-05T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://doucube.github.io/categories/%D8%AA%D8%AC%D8%B1%D8%A8%D8%A9/</loc>
+  </url><url>
+    <loc>https://doucube.github.io/categories/%D8%AA%D8%AC%D8%B1%D8%A8%D8%A9-%D9%85%D8%B9-%D9%81%D8%B1%D8%A7%D8%BA%D8%A7%D8%AA/</loc>
+  </url><url>
+    <loc>https://doucube.github.io/tags/%D9%85%D8%A7%D8%B1%D9%83%D8%AF%D8%A7%D9%88%D9%86/</loc>
+  </url><url>
+    <loc>https://doucube.github.io/tags/%D9%86%D8%B5/</loc>
+  </url><url>
+    <loc>https://doucube.github.io/tags/%D9%88%D8%B3%D9%85-%D9%85%D8%B9-%D9%81%D8%B1%D8%A7%D8%BA%D8%A7%D8%AA/</loc>
   </url><url>
     <loc>https://doucube.github.io/search/</loc>
   </url><url>

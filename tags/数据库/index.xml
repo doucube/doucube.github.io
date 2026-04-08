@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>数据库 on 贰立方</title>
+        <link>https://doucube.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</link>
+        <description>Recent content in 数据库 on 贰立方</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <copyright>Doucube</copyright>
+        <lastBuildDate>Sun, 22 Mar 2026 12:32:34 +0800</lastBuildDate><atom:link href="https://doucube.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>SQL 学习笔记 01：认识数据库、表、字段，以及 Web 请求为什么会连到 SQL</title>
+        <link>https://doucube.github.io/p/sql-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-01%E8%AE%A4%E8%AF%86%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E5%AD%97%E6%AE%B5%E4%BB%A5%E5%8F%8A-web-%E8%AF%B7%E6%B1%82%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E8%BF%9E%E5%88%B0-sql/</link>
+        <pubDate>Sun, 22 Mar 2026 12:32:34 +0800</pubDate>
+        
+        <guid>https://doucube.github.io/p/sql-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-01%E8%AE%A4%E8%AF%86%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E5%AD%97%E6%AE%B5%E4%BB%A5%E5%8F%8A-web-%E8%AF%B7%E6%B1%82%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E8%BF%9E%E5%88%B0-sql/</guid>
+        <description>&lt;h1 id=&#34;sql-学习笔记-01认识数据库表字段以及-web-请求为什么会连到-sql&#34;&gt;SQL 学习笔记 01：认识数据库、表、字段，以及 Web 请求为什么会连到 SQL
+&lt;/h1&gt;&lt;h2 id=&#34;摘要&#34;&gt;摘要
+&lt;/h2&gt;&lt;p&gt;这篇文章是 SQL 入门阶段的第一篇学习笔记，重点解决两个最基础的问题：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;认识数据库、表、字段、行分别是什么&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;理解 Web 请求为什么会连到 SQL&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;如果把 SQL 学习比作搭房子，那么这篇内容就是最底层的地基。&lt;u&gt;先把概念认清，再学查询、增删改查和项目实战，会顺很多。&lt;/u&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;目录&#34;&gt;目录
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#%e4%b8%80sql-%e5%ad%a6%e4%b9%a0%e4%b8%ad%e6%9c%80%e5%9f%ba%e7%a1%80%e7%9a%84%e4%b8%a4%e4%b8%aa%e4%bb%bb%e5%8a%a1&#34; &gt;一、SQL 学习中最基础的两个任务&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#%e4%ba%8c%e8%ae%a4%e8%af%86%e6%95%b0%e6%8d%ae%e5%ba%93%e8%a1%a8%e8%a1%8c%e5%ad%97%e6%ae%b5&#34; &gt;二、认识数据库、表、行、字段&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#1-%e6%95%b0%e6%8d%ae%e5%ba%93database&#34; &gt;1. 数据库（Database）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#2-%e8%a1%a8table&#34; &gt;2. 表（Table）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#3-%e5%ad%97%e6%ae%b5field&#34; &gt;3. 字段（Field）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#4-%e8%a1%8crow&#34; &gt;4. 行（Row）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#5-%e5%ae%83%e4%bb%ac%e4%b9%8b%e9%97%b4%e7%9a%84%e5%8c%85%e5%90%ab%e5%85%b3%e7%b3%bb&#34; &gt;5. 它们之间的包含关系&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#%e4%b8%89web-%e8%af%b7%e6%b1%82%e4%b8%ba%e4%bb%80%e4%b9%88%e4%bc%9a%e8%bf%9e%e5%88%b0-sql&#34; &gt;三、Web 请求为什么会连到 SQL&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#%e5%9b%9b%e4%b8%80%e4%b8%aa%e6%9c%80%e7%ae%80%e5%8d%95%e7%9a%84%e5%ae%8c%e6%95%b4%e6%b5%81%e7%a8%8b%e7%a4%ba%e6%84%8f&#34; &gt;四、一个最简单的完整流程示意&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#%e4%ba%94%e5%ad%a6%e4%b9%a0%e8%bf%99%e4%b8%80%e9%83%a8%e5%88%86%e6%97%b6%e6%9c%80%e8%af%a5%e8%ae%b0%e4%bd%8f%e7%9a%84%e5%86%85%e5%ae%b9&#34; &gt;五、学习这一部分时最该记住的内容&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#%e6%80%bb%e7%bb%93&#34; &gt;总结&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;一sql-学习中最基础的两个任务&#34;&gt;一、SQL 学习中最基础的两个任务
+&lt;/h2&gt;&lt;p&gt;在学习 SQL 时，最基础的任务有两个：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;认识数据库、表、行、字段&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;理解 Web 请求为什么会连到 SQL&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这两个知识点，是后续学习 &lt;strong&gt;查询语句、增删改查、表结构设计、项目实战&lt;/strong&gt; 的基础。&lt;u&gt;如果前面这些概念没有建立起来，后面的 &lt;code&gt;SELECT&lt;/code&gt;、&lt;code&gt;INSERT&lt;/code&gt;、&lt;code&gt;UPDATE&lt;/code&gt;、&lt;code&gt;DELETE&lt;/code&gt; 都会学得很乱。&lt;/u&gt;&lt;/p&gt;
+&lt;h3 id=&#34;图表理解&#34;&gt;图表理解
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;基础任务&lt;/th&gt;
+          &lt;th&gt;作用&lt;/th&gt;
+          &lt;th&gt;为什么重要&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;认识数据库结构&lt;/td&gt;
+          &lt;td&gt;搞清楚数据存在哪里、怎么组织&lt;/td&gt;
+          &lt;td&gt;这是理解 SQL 操作对象的前提&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;理解 Web 与 SQL 的关系&lt;/td&gt;
+          &lt;td&gt;搞清楚请求为什么会访问数据库&lt;/td&gt;
+          &lt;td&gt;这是理解真实项目运行流程的前提&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;二认识数据库表行字段&#34;&gt;二、认识数据库、表、行、字段
+&lt;/h2&gt;&lt;h3 id=&#34;1-数据库database&#34;&gt;1. 数据库（Database）
+&lt;/h3&gt;&lt;p&gt;数据库可以理解成一个&lt;strong&gt;仓库&lt;/strong&gt;，专门用来存储数据。&lt;/p&gt;
+&lt;p&gt;常见的数据库有：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;MySQL&lt;/li&gt;
+&lt;li&gt;PostgreSQL&lt;/li&gt;
+&lt;li&gt;SQL Server&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;记忆方式&#34;&gt;记忆方式
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;数据库 = 大仓库&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;一个数据库里可以放很多张表&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;图表理解-1&#34;&gt;图表理解
+&lt;/h4&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;概念&lt;/th&gt;
+          &lt;th&gt;类比&lt;/th&gt;
+          &lt;th&gt;作用&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;数据库&lt;/td&gt;
+          &lt;td&gt;大仓库&lt;/td&gt;
+          &lt;td&gt;负责集中存放和管理数据&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;数据库（Database）
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;├── users 表
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;├── orders 表
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;└── products 表
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;理解重点：&lt;/strong&gt; &lt;u&gt;数据库不是一条数据，也不是一张表，而是“装很多表的整体容器”。&lt;/u&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;2-表table&#34;&gt;2. 表（Table）
+&lt;/h3&gt;&lt;p&gt;表可以理解成仓库中的&lt;strong&gt;货架&lt;/strong&gt;，每个货架负责存放一类数据，也就是对数据进行分类。&lt;/p&gt;
+&lt;p&gt;例如：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用户表 &lt;code&gt;users&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;订单表 &lt;code&gt;orders&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;商品表 &lt;code&gt;products&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;记忆方式-1&#34;&gt;记忆方式
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;表 = 仓库中的货架&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;一张表通常用来保存同一种类型的数据&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;图表理解-2&#34;&gt;图表理解
+&lt;/h4&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;表名&lt;/th&gt;
+          &lt;th&gt;存放内容&lt;/th&gt;
+          &lt;th&gt;示例&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;users&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;用户数据&lt;/td&gt;
+          &lt;td&gt;用户名、年龄、邮箱&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;orders&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;订单数据&lt;/td&gt;
+          &lt;td&gt;订单编号、金额、下单时间&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;products&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;商品数据&lt;/td&gt;
+          &lt;td&gt;商品名、价格、库存&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;数据库
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;└── users 表
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    ├── id
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    ├── name
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    ├── age
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    └── email
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;理解重点：&lt;/strong&gt; &lt;u&gt;表的作用是“分类存储数据”，不是把所有数据混在一起。&lt;/u&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;3-字段field&#34;&gt;3. 字段（Field）
+&lt;/h3&gt;&lt;p&gt;字段就是表中的&lt;strong&gt;列&lt;/strong&gt;，表示这类数据有哪些属性。&lt;/p&gt;
+&lt;p&gt;例如，在用户表中，常见字段可能有：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;id&lt;/code&gt;：用户编号&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;name&lt;/code&gt;：用户名&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;age&lt;/code&gt;：年龄&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;email&lt;/code&gt;：邮箱&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;记忆方式-2&#34;&gt;记忆方式
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;字段 = 表头 = 一列数据的名称&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;字段描述的是“这条数据有哪些属性”&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;图表理解-3&#34;&gt;图表理解
+&lt;/h4&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;字段名&lt;/th&gt;
+          &lt;th&gt;含义&lt;/th&gt;
+          &lt;th&gt;数据类型示意&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;id&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;用户编号&lt;/td&gt;
+          &lt;td&gt;整数&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;name&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;用户名&lt;/td&gt;
+          &lt;td&gt;字符串&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;age&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;年龄&lt;/td&gt;
+          &lt;td&gt;整数&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;email&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;邮箱&lt;/td&gt;
+          &lt;td&gt;字符串&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;users 表
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;+----+------+-----+--------------+
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;| id | name | age | email        |
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;+----+------+-----+--------------+
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;理解重点：&lt;/strong&gt; &lt;u&gt;字段描述的是“属性”，也就是一条记录应该有哪些信息。&lt;/u&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;4-行row&#34;&gt;4. 行（Row）
+&lt;/h3&gt;&lt;p&gt;行就是表中的&lt;strong&gt;一条具体记录&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;例如，在用户表中，一行数据可能是：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;id&lt;/th&gt;
+          &lt;th&gt;name&lt;/th&gt;
+          &lt;th style=&#34;text-align: right&#34;&gt;age&lt;/th&gt;
+          &lt;th&gt;email&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;1&lt;/td&gt;
+          &lt;td&gt;张三&lt;/td&gt;
+          &lt;td style=&#34;text-align: right&#34;&gt;20&lt;/td&gt;
+          &lt;td&gt;&lt;a class=&#34;link&#34; href=&#34;mailto:a@test.com&#34; &gt;a@test.com&lt;/a&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;这整一行就表示一个具体用户的信息。&lt;/p&gt;
+&lt;h4 id=&#34;记忆方式-3&#34;&gt;记忆方式
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;行 = 一条完整的数据记录&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;一行通常对应一个真实对象，比如一个用户、一张订单、一个商品&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;图表理解-4&#34;&gt;图表理解
+&lt;/h4&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;行的含义&lt;/th&gt;
+          &lt;th&gt;对应真实对象&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;一条用户记录&lt;/td&gt;
+          &lt;td&gt;一个真实用户&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;一条订单记录&lt;/td&gt;
+          &lt;td&gt;一笔真实订单&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;一条商品记录&lt;/td&gt;
+          &lt;td&gt;一个真实商品&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;users 表中的一行记录
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;(1, &amp;#39;张三&amp;#39;, 20, &amp;#39;a@test.com&amp;#39;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;理解重点：&lt;/strong&gt; &lt;u&gt;字段是“列名”，行是“具体数据”。这一点必须分清。&lt;/u&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;5-它们之间的包含关系&#34;&gt;5. 它们之间的包含关系
+&lt;/h3&gt;&lt;p&gt;它们之间的关系是：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;数据库&lt;/strong&gt; 包含多个 &lt;strong&gt;表&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;表&lt;/strong&gt; 由 &lt;strong&gt;字段&lt;/strong&gt; 和 &lt;strong&gt;行&lt;/strong&gt; 组成&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;字段&lt;/strong&gt; 是列&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;行&lt;/strong&gt; 是记录&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;可以记成：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;数据库
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;└── 表
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    ├── 字段（列）
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    └── 行（记录）
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;总结表&#34;&gt;总结表
+&lt;/h4&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;概念&lt;/th&gt;
+          &lt;th&gt;本质&lt;/th&gt;
+          &lt;th&gt;你可以怎么记&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;数据库&lt;/td&gt;
+          &lt;td&gt;装表的容器&lt;/td&gt;
+          &lt;td&gt;大仓库&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;表&lt;/td&gt;
+          &lt;td&gt;分类存放数据的结构&lt;/td&gt;
+          &lt;td&gt;货架&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;字段&lt;/td&gt;
+          &lt;td&gt;数据的属性&lt;/td&gt;
+          &lt;td&gt;列名 / 表头&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;行&lt;/td&gt;
+          &lt;td&gt;一条实际记录&lt;/td&gt;
+          &lt;td&gt;一条完整数据&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;三web-请求为什么会连到-sql&#34;&gt;三、Web 请求为什么会连到 SQL
+&lt;/h2&gt;&lt;p&gt;很多初学者会疑惑：&lt;strong&gt;我明明是在浏览器里点按钮，为什么最后会查到数据库？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;原因是：浏览器并不会直接操作数据库，而是会先把请求发给后端程序，再由后端程序去执行 SQL。&lt;/p&gt;
+&lt;p&gt;一个非常常见的流程如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;用户在浏览器中发起请求。&lt;/li&gt;
+&lt;li&gt;请求到达后端服务。&lt;/li&gt;
+&lt;li&gt;后端根据业务逻辑拼装或调用 SQL。&lt;/li&gt;
+&lt;li&gt;数据库执行 SQL。&lt;/li&gt;
+&lt;li&gt;数据库把结果返回给后端。&lt;/li&gt;
+&lt;li&gt;后端再把结果返回给浏览器。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;图表理解-5&#34;&gt;图表理解
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;浏览器
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  ↓ 发送请求
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;后端程序
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  ↓ 执行 SQL
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;数据库
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  ↓ 返回结果
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;后端程序
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  ↓ 返回页面 / JSON
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;浏览器
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;流程表说明&#34;&gt;流程表说明
+&lt;/h4&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;环节&lt;/th&gt;
+          &lt;th&gt;做什么&lt;/th&gt;
+          &lt;th&gt;是否直接写 SQL&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;浏览器&lt;/td&gt;
+          &lt;td&gt;发起请求、展示页面&lt;/td&gt;
+          &lt;td&gt;否&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;后端程序&lt;/td&gt;
+          &lt;td&gt;接收请求、处理逻辑、访问数据库&lt;/td&gt;
+          &lt;td&gt;是&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;数据库&lt;/td&gt;
+          &lt;td&gt;存储数据、执行 SQL&lt;/td&gt;
+          &lt;td&gt;执行但不负责页面展示&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;理解重点：&lt;/strong&gt; &lt;u&gt;真正连接 SQL 的通常不是浏览器，而是后端程序。&lt;/u&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;四一个最简单的完整流程示意&#34;&gt;四、一个最简单的完整流程示意
+&lt;/h2&gt;&lt;p&gt;假设用户访问“查看所有用户”页面，背后可能发生的是：&lt;/p&gt;
+&lt;h3 id=&#34;第一步浏览器发起请求&#34;&gt;第一步：浏览器发起请求
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;GET /users
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;第二步后端收到请求并准备查询&#34;&gt;第二步：后端收到请求并准备查询
+&lt;/h3&gt;&lt;p&gt;后端可能会执行这样一条 SQL：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;SELECT&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;users&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;第三步数据库返回结果&#34;&gt;第三步：数据库返回结果
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;id&lt;/th&gt;
+          &lt;th&gt;name&lt;/th&gt;
+          &lt;th style=&#34;text-align: right&#34;&gt;age&lt;/th&gt;
+          &lt;th&gt;email&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;1&lt;/td&gt;
+          &lt;td&gt;张三&lt;/td&gt;
+          &lt;td style=&#34;text-align: right&#34;&gt;20&lt;/td&gt;
+          &lt;td&gt;&lt;a class=&#34;link&#34; href=&#34;mailto:a@test.com&#34; &gt;a@test.com&lt;/a&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;2&lt;/td&gt;
+          &lt;td&gt;李四&lt;/td&gt;
+          &lt;td style=&#34;text-align: right&#34;&gt;22&lt;/td&gt;
+          &lt;td&gt;&lt;a class=&#34;link&#34; href=&#34;mailto:b@test.com&#34; &gt;b@test.com&lt;/a&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id=&#34;第四步后端把结果返回给浏览器&#34;&gt;第四步：后端把结果返回给浏览器
+&lt;/h3&gt;&lt;p&gt;浏览器最终看到的是用户列表页面，或者一个 JSON 接口响应。&lt;/p&gt;
+&lt;h4 id=&#34;图表理解-6&#34;&gt;图表理解
+&lt;/h4&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;步骤&lt;/th&gt;
+          &lt;th&gt;输入&lt;/th&gt;
+          &lt;th&gt;输出&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;浏览器请求&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;/users&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;把请求发给后端&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;后端查询&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;SELECT * FROM users;&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;从数据库取数据&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;数据库返回&lt;/td&gt;
+          &lt;td&gt;数据表结果&lt;/td&gt;
+          &lt;td&gt;把结果返回后端&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;页面展示&lt;/td&gt;
+          &lt;td&gt;后端响应&lt;/td&gt;
+          &lt;td&gt;浏览器展示数据&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;五学习这一部分时最该记住的内容&#34;&gt;五、学习这一部分时最该记住的内容
+&lt;/h2&gt;&lt;p&gt;如果你是 SQL 初学者，这一部分最应该记住的是下面这几句话：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;数据库是装表的地方。&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;表是分类存放数据的结构。&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;字段是列，是属性。&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;行是记录，是具体数据。&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Web 请求一般不会直接访问数据库，而是通过后端程序去执行 SQL。&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;速记图&#34;&gt;速记图
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;浏览器 → 后端 → SQL → 数据库 → 后端 → 浏览器
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;易混点对比&#34;&gt;易混点对比
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;容易混淆的概念&lt;/th&gt;
+          &lt;th&gt;正确认识&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;数据库 和 表&lt;/td&gt;
+          &lt;td&gt;数据库包含表，表不是数据库&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;字段 和 行&lt;/td&gt;
+          &lt;td&gt;字段是列名，行是一条记录&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;浏览器 和 数据库&lt;/td&gt;
+          &lt;td&gt;浏览器不直接连数据库，通常通过后端访问&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

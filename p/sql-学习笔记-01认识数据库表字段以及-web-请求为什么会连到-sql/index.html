@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="从数据库、表、字段、行四个基础概念出发，理解 Web 请求如何与 SQL 发生连接，适合 SQL 入门学习。">
+<title>SQL 学习笔记 01：认识数据库、表、字段，以及 Web 请求为什么会连到 SQL</title>
+
+<link rel='canonical' href='https://doucube.github.io/p/sql-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-01%E8%AE%A4%E8%AF%86%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E5%AD%97%E6%AE%B5%E4%BB%A5%E5%8F%8A-web-%E8%AF%B7%E6%B1%82%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E8%BF%9E%E5%88%B0-sql/'>
+
+<link rel="stylesheet" href="/scss/style.min.c91073e1bef24baf3131464aee14e30bb1335275cee51563e55fb2a5e03eca69.css"><meta property='og:title' content="SQL 学习笔记 01：认识数据库、表、字段，以及 Web 请求为什么会连到 SQL">
+<meta property='og:description' content="从数据库、表、字段、行四个基础概念出发，理解 Web 请求如何与 SQL 发生连接，适合 SQL 入门学习。">
+<meta property='og:url' content='https://doucube.github.io/p/sql-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-01%E8%AE%A4%E8%AF%86%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E5%AD%97%E6%AE%B5%E4%BB%A5%E5%8F%8A-web-%E8%AF%B7%E6%B1%82%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E8%BF%9E%E5%88%B0-sql/'>
+<meta property='og:site_name' content='贰立方'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='SQL' /><meta property='article:tag' content='数据库' /><meta property='article:tag' content='MySQL' /><meta property='article:tag' content='Web开发' /><meta property='article:tag' content='学习笔记' /><meta property='article:published_time' content='2026-03-22T12:32:34&#43;08:00'/><meta property='article:modified_time' content='2026-03-22T12:32:34&#43;08:00'/>
+<meta name="twitter:title" content="SQL 学习笔记 01：认识数据库、表、字段，以及 Web 请求为什么会连到 SQL">
+<meta name="twitter:description" content="从数据库、表、字段、行四个基础概念出发，理解 Web 请求如何与 SQL 发生连接，适合 SQL 入门学习。">
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_884fba9ea50f4494.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🖕</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">贰立方</a></h1>
+            <h2 class="site-description">该写点什么有意思的东西呢.</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/CaiJimmy/hugo-theme-stack'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://twitter.com'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>查找</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E4%BC%A0%E9%80%81%E9%97%A8/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>传送门</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://doucube.github.io/en/" >English</option>
+                                
+                                    <option value="https://doucube.github.io/" selected>简中</option>
+                                
+                                    <option value="https://doucube.github.io/ja/" >にほんご</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#摘要">摘要</a></li>
+    <li><a href="#目录">目录</a></li>
+    <li><a href="#一sql-学习中最基础的两个任务">一、SQL 学习中最基础的两个任务</a>
+      <ol>
+        <li><a href="#图表理解">图表理解</a></li>
+      </ol>
+    </li>
+    <li><a href="#二认识数据库表行字段">二、认识数据库、表、行、字段</a>
+      <ol>
+        <li><a href="#1-数据库database">1. 数据库（Database）</a>
+          <ol>
+            <li><a href="#记忆方式">记忆方式</a></li>
+            <li><a href="#图表理解-1">图表理解</a></li>
+          </ol>
+        </li>
+        <li><a href="#2-表table">2. 表（Table）</a>
+          <ol>
+            <li><a href="#记忆方式-1">记忆方式</a></li>
+            <li><a href="#图表理解-2">图表理解</a></li>
+          </ol>
+        </li>
+        <li><a href="#3-字段field">3. 字段（Field）</a>
+          <ol>
+            <li><a href="#记忆方式-2">记忆方式</a></li>
+            <li><a href="#图表理解-3">图表理解</a></li>
+          </ol>
+        </li>
+        <li><a href="#4-行row">4. 行（Row）</a>
+          <ol>
+            <li><a href="#记忆方式-3">记忆方式</a></li>
+            <li><a href="#图表理解-4">图表理解</a></li>
+          </ol>
+        </li>
+        <li><a href="#5-它们之间的包含关系">5. 它们之间的包含关系</a>
+          <ol>
+            <li><a href="#总结表">总结表</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#三web-请求为什么会连到-sql">三、Web 请求为什么会连到 SQL</a>
+      <ol>
+        <li><a href="#图表理解-5">图表理解</a>
+          <ol>
+            <li><a href="#流程表说明">流程表说明</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#四一个最简单的完整流程示意">四、一个最简单的完整流程示意</a>
+      <ol>
+        <li><a href="#第一步浏览器发起请求">第一步：浏览器发起请求</a></li>
+        <li><a href="#第二步后端收到请求并准备查询">第二步：后端收到请求并准备查询</a></li>
+        <li><a href="#第三步数据库返回结果">第三步：数据库返回结果</a></li>
+        <li><a href="#第四步后端把结果返回给浏览器">第四步：后端把结果返回给浏览器</a>
+          <ol>
+            <li><a href="#图表理解-6">图表理解</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#五学习这一部分时最该记住的内容">五、学习这一部分时最该记住的内容</a>
+      <ol>
+        <li><a href="#速记图">速记图</a></li>
+        <li><a href="#易混点对比">易混点对比</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/sql-%E5%AD%A6%E4%B9%A0/" >
+                SQL 学习
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/sql-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-01%E8%AE%A4%E8%AF%86%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E5%AD%97%E6%AE%B5%E4%BB%A5%E5%8F%8A-web-%E8%AF%B7%E6%B1%82%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E8%BF%9E%E5%88%B0-sql/">SQL 学习笔记 01：认识数据库、表、字段，以及 Web 请求为什么会连到 SQL</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            从数据库、表、字段、行四个基础概念出发，理解 Web 请求如何与 SQL 发生连接，适合 SQL 入门学习。
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2026-03-22</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 5 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="sql-学习笔记-01认识数据库表字段以及-web-请求为什么会连到-sql">SQL 学习笔记 01：认识数据库、表、字段，以及 Web 请求为什么会连到 SQL
+</h1><h2 id="摘要">摘要
+</h2><p>这篇文章是 SQL 入门阶段的第一篇学习笔记，重点解决两个最基础的问题：</p>
+<ol>
+<li><strong>认识数据库、表、字段、行分别是什么</strong>。</li>
+<li><strong>理解 Web 请求为什么会连到 SQL</strong>。</li>
+</ol>
+<p>如果把 SQL 学习比作搭房子，那么这篇内容就是最底层的地基。<u>先把概念认清，再学查询、增删改查和项目实战，会顺很多。</u></p>
+<hr>
+<h2 id="目录">目录
+</h2><ul>
+<li><a class="link" href="#%e4%b8%80sql-%e5%ad%a6%e4%b9%a0%e4%b8%ad%e6%9c%80%e5%9f%ba%e7%a1%80%e7%9a%84%e4%b8%a4%e4%b8%aa%e4%bb%bb%e5%8a%a1" >一、SQL 学习中最基础的两个任务</a></li>
+<li><a class="link" href="#%e4%ba%8c%e8%ae%a4%e8%af%86%e6%95%b0%e6%8d%ae%e5%ba%93%e8%a1%a8%e8%a1%8c%e5%ad%97%e6%ae%b5" >二、认识数据库、表、行、字段</a>
+<ul>
+<li><a class="link" href="#1-%e6%95%b0%e6%8d%ae%e5%ba%93database" >1. 数据库（Database）</a></li>
+<li><a class="link" href="#2-%e8%a1%a8table" >2. 表（Table）</a></li>
+<li><a class="link" href="#3-%e5%ad%97%e6%ae%b5field" >3. 字段（Field）</a></li>
+<li><a class="link" href="#4-%e8%a1%8crow" >4. 行（Row）</a></li>
+<li><a class="link" href="#5-%e5%ae%83%e4%bb%ac%e4%b9%8b%e9%97%b4%e7%9a%84%e5%8c%85%e5%90%ab%e5%85%b3%e7%b3%bb" >5. 它们之间的包含关系</a></li>
+</ul>
+</li>
+<li><a class="link" href="#%e4%b8%89web-%e8%af%b7%e6%b1%82%e4%b8%ba%e4%bb%80%e4%b9%88%e4%bc%9a%e8%bf%9e%e5%88%b0-sql" >三、Web 请求为什么会连到 SQL</a></li>
+<li><a class="link" href="#%e5%9b%9b%e4%b8%80%e4%b8%aa%e6%9c%80%e7%ae%80%e5%8d%95%e7%9a%84%e5%ae%8c%e6%95%b4%e6%b5%81%e7%a8%8b%e7%a4%ba%e6%84%8f" >四、一个最简单的完整流程示意</a></li>
+<li><a class="link" href="#%e4%ba%94%e5%ad%a6%e4%b9%a0%e8%bf%99%e4%b8%80%e9%83%a8%e5%88%86%e6%97%b6%e6%9c%80%e8%af%a5%e8%ae%b0%e4%bd%8f%e7%9a%84%e5%86%85%e5%ae%b9" >五、学习这一部分时最该记住的内容</a></li>
+<li><a class="link" href="#%e6%80%bb%e7%bb%93" >总结</a></li>
+</ul>
+<hr>
+<h2 id="一sql-学习中最基础的两个任务">一、SQL 学习中最基础的两个任务
+</h2><p>在学习 SQL 时，最基础的任务有两个：</p>
+<ol>
+<li><strong>认识数据库、表、行、字段</strong>。</li>
+<li><strong>理解 Web 请求为什么会连到 SQL</strong>。</li>
+</ol>
+<p>这两个知识点，是后续学习 <strong>查询语句、增删改查、表结构设计、项目实战</strong> 的基础。<u>如果前面这些概念没有建立起来，后面的 <code>SELECT</code>、<code>INSERT</code>、<code>UPDATE</code>、<code>DELETE</code> 都会学得很乱。</u></p>
+<h3 id="图表理解">图表理解
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>基础任务</th>
+          <th>作用</th>
+          <th>为什么重要</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>认识数据库结构</td>
+          <td>搞清楚数据存在哪里、怎么组织</td>
+          <td>这是理解 SQL 操作对象的前提</td>
+      </tr>
+      <tr>
+          <td>理解 Web 与 SQL 的关系</td>
+          <td>搞清楚请求为什么会访问数据库</td>
+          <td>这是理解真实项目运行流程的前提</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h2 id="二认识数据库表行字段">二、认识数据库、表、行、字段
+</h2><h3 id="1-数据库database">1. 数据库（Database）
+</h3><p>数据库可以理解成一个<strong>仓库</strong>，专门用来存储数据。</p>
+<p>常见的数据库有：</p>
+<ul>
+<li>MySQL</li>
+<li>PostgreSQL</li>
+<li>SQL Server</li>
+</ul>
+<h4 id="记忆方式">记忆方式
+</h4><ul>
+<li><strong>数据库 = 大仓库</strong></li>
+<li>一个数据库里可以放很多张表</li>
+</ul>
+<h4 id="图表理解-1">图表理解
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>概念</th>
+          <th>类比</th>
+          <th>作用</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>数据库</td>
+          <td>大仓库</td>
+          <td>负责集中存放和管理数据</td>
+      </tr>
+  </tbody>
+</table></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">数据库（Database）
+</span></span><span class="line"><span class="cl">├── users 表
+</span></span><span class="line"><span class="cl">├── orders 表
+</span></span><span class="line"><span class="cl">└── products 表
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p><strong>理解重点：</strong> <u>数据库不是一条数据，也不是一张表，而是“装很多表的整体容器”。</u></p>
+</blockquote>
+<hr>
+<h3 id="2-表table">2. 表（Table）
+</h3><p>表可以理解成仓库中的<strong>货架</strong>，每个货架负责存放一类数据，也就是对数据进行分类。</p>
+<p>例如：</p>
+<ul>
+<li>用户表 <code>users</code></li>
+<li>订单表 <code>orders</code></li>
+<li>商品表 <code>products</code></li>
+</ul>
+<h4 id="记忆方式-1">记忆方式
+</h4><ul>
+<li><strong>表 = 仓库中的货架</strong></li>
+<li>一张表通常用来保存同一种类型的数据</li>
+</ul>
+<h4 id="图表理解-2">图表理解
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>表名</th>
+          <th>存放内容</th>
+          <th>示例</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>users</code></td>
+          <td>用户数据</td>
+          <td>用户名、年龄、邮箱</td>
+      </tr>
+      <tr>
+          <td><code>orders</code></td>
+          <td>订单数据</td>
+          <td>订单编号、金额、下单时间</td>
+      </tr>
+      <tr>
+          <td><code>products</code></td>
+          <td>商品数据</td>
+          <td>商品名、价格、库存</td>
+      </tr>
+  </tbody>
+</table></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">数据库
+</span></span><span class="line"><span class="cl">└── users 表
+</span></span><span class="line"><span class="cl">    ├── id
+</span></span><span class="line"><span class="cl">    ├── name
+</span></span><span class="line"><span class="cl">    ├── age
+</span></span><span class="line"><span class="cl">    └── email
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p><strong>理解重点：</strong> <u>表的作用是“分类存储数据”，不是把所有数据混在一起。</u></p>
+</blockquote>
+<hr>
+<h3 id="3-字段field">3. 字段（Field）
+</h3><p>字段就是表中的<strong>列</strong>，表示这类数据有哪些属性。</p>
+<p>例如，在用户表中，常见字段可能有：</p>
+<ul>
+<li><code>id</code>：用户编号</li>
+<li><code>name</code>：用户名</li>
+<li><code>age</code>：年龄</li>
+<li><code>email</code>：邮箱</li>
+</ul>
+<h4 id="记忆方式-2">记忆方式
+</h4><ul>
+<li><strong>字段 = 表头 = 一列数据的名称</strong></li>
+<li>字段描述的是“这条数据有哪些属性”</li>
+</ul>
+<h4 id="图表理解-3">图表理解
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>字段名</th>
+          <th>含义</th>
+          <th>数据类型示意</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>id</code></td>
+          <td>用户编号</td>
+          <td>整数</td>
+      </tr>
+      <tr>
+          <td><code>name</code></td>
+          <td>用户名</td>
+          <td>字符串</td>
+      </tr>
+      <tr>
+          <td><code>age</code></td>
+          <td>年龄</td>
+          <td>整数</td>
+      </tr>
+      <tr>
+          <td><code>email</code></td>
+          <td>邮箱</td>
+          <td>字符串</td>
+      </tr>
+  </tbody>
+</table></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">users 表
+</span></span><span class="line"><span class="cl">+----+------+-----+--------------+
+</span></span><span class="line"><span class="cl">| id | name | age | email        |
+</span></span><span class="line"><span class="cl">+----+------+-----+--------------+
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p><strong>理解重点：</strong> <u>字段描述的是“属性”，也就是一条记录应该有哪些信息。</u></p>
+</blockquote>
+<hr>
+<h3 id="4-行row">4. 行（Row）
+</h3><p>行就是表中的<strong>一条具体记录</strong>。</p>
+<p>例如，在用户表中，一行数据可能是：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>id</th>
+          <th>name</th>
+          <th style="text-align: right">age</th>
+          <th>email</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>张三</td>
+          <td style="text-align: right">20</td>
+          <td><a class="link" href="mailto:a@test.com" >a@test.com</a></td>
+      </tr>
+  </tbody>
+</table></div>
+<p>这整一行就表示一个具体用户的信息。</p>
+<h4 id="记忆方式-3">记忆方式
+</h4><ul>
+<li><strong>行 = 一条完整的数据记录</strong></li>
+<li>一行通常对应一个真实对象，比如一个用户、一张订单、一个商品</li>
+</ul>
+<h4 id="图表理解-4">图表理解
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>行的含义</th>
+          <th>对应真实对象</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>一条用户记录</td>
+          <td>一个真实用户</td>
+      </tr>
+      <tr>
+          <td>一条订单记录</td>
+          <td>一笔真实订单</td>
+      </tr>
+      <tr>
+          <td>一条商品记录</td>
+          <td>一个真实商品</td>
+      </tr>
+  </tbody>
+</table></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">users 表中的一行记录
+</span></span><span class="line"><span class="cl">(1, &#39;张三&#39;, 20, &#39;a@test.com&#39;)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p><strong>理解重点：</strong> <u>字段是“列名”，行是“具体数据”。这一点必须分清。</u></p>
+</blockquote>
+<hr>
+<h3 id="5-它们之间的包含关系">5. 它们之间的包含关系
+</h3><p>它们之间的关系是：</p>
+<ul>
+<li><strong>数据库</strong> 包含多个 <strong>表</strong></li>
+<li><strong>表</strong> 由 <strong>字段</strong> 和 <strong>行</strong> 组成</li>
+<li><strong>字段</strong> 是列</li>
+<li><strong>行</strong> 是记录</li>
+</ul>
+<p>可以记成：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">数据库
+</span></span><span class="line"><span class="cl">└── 表
+</span></span><span class="line"><span class="cl">    ├── 字段（列）
+</span></span><span class="line"><span class="cl">    └── 行（记录）
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="总结表">总结表
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>概念</th>
+          <th>本质</th>
+          <th>你可以怎么记</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>数据库</td>
+          <td>装表的容器</td>
+          <td>大仓库</td>
+      </tr>
+      <tr>
+          <td>表</td>
+          <td>分类存放数据的结构</td>
+          <td>货架</td>
+      </tr>
+      <tr>
+          <td>字段</td>
+          <td>数据的属性</td>
+          <td>列名 / 表头</td>
+      </tr>
+      <tr>
+          <td>行</td>
+          <td>一条实际记录</td>
+          <td>一条完整数据</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h2 id="三web-请求为什么会连到-sql">三、Web 请求为什么会连到 SQL
+</h2><p>很多初学者会疑惑：<strong>我明明是在浏览器里点按钮，为什么最后会查到数据库？</strong></p>
+<p>原因是：浏览器并不会直接操作数据库，而是会先把请求发给后端程序，再由后端程序去执行 SQL。</p>
+<p>一个非常常见的流程如下：</p>
+<ol>
+<li>用户在浏览器中发起请求。</li>
+<li>请求到达后端服务。</li>
+<li>后端根据业务逻辑拼装或调用 SQL。</li>
+<li>数据库执行 SQL。</li>
+<li>数据库把结果返回给后端。</li>
+<li>后端再把结果返回给浏览器。</li>
+</ol>
+<h3 id="图表理解-5">图表理解
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">浏览器
+</span></span><span class="line"><span class="cl">  ↓ 发送请求
+</span></span><span class="line"><span class="cl">后端程序
+</span></span><span class="line"><span class="cl">  ↓ 执行 SQL
+</span></span><span class="line"><span class="cl">数据库
+</span></span><span class="line"><span class="cl">  ↓ 返回结果
+</span></span><span class="line"><span class="cl">后端程序
+</span></span><span class="line"><span class="cl">  ↓ 返回页面 / JSON
+</span></span><span class="line"><span class="cl">浏览器
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="流程表说明">流程表说明
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>环节</th>
+          <th>做什么</th>
+          <th>是否直接写 SQL</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>浏览器</td>
+          <td>发起请求、展示页面</td>
+          <td>否</td>
+      </tr>
+      <tr>
+          <td>后端程序</td>
+          <td>接收请求、处理逻辑、访问数据库</td>
+          <td>是</td>
+      </tr>
+      <tr>
+          <td>数据库</td>
+          <td>存储数据、执行 SQL</td>
+          <td>执行但不负责页面展示</td>
+      </tr>
+  </tbody>
+</table></div>
+<blockquote>
+<p><strong>理解重点：</strong> <u>真正连接 SQL 的通常不是浏览器，而是后端程序。</u></p>
+</blockquote>
+<hr>
+<h2 id="四一个最简单的完整流程示意">四、一个最简单的完整流程示意
+</h2><p>假设用户访问“查看所有用户”页面，背后可能发生的是：</p>
+<h3 id="第一步浏览器发起请求">第一步：浏览器发起请求
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">GET /users
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="第二步后端收到请求并准备查询">第二步：后端收到请求并准备查询
+</h3><p>后端可能会执行这样一条 SQL：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">users</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="第三步数据库返回结果">第三步：数据库返回结果
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>id</th>
+          <th>name</th>
+          <th style="text-align: right">age</th>
+          <th>email</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>张三</td>
+          <td style="text-align: right">20</td>
+          <td><a class="link" href="mailto:a@test.com" >a@test.com</a></td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>李四</td>
+          <td style="text-align: right">22</td>
+          <td><a class="link" href="mailto:b@test.com" >b@test.com</a></td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="第四步后端把结果返回给浏览器">第四步：后端把结果返回给浏览器
+</h3><p>浏览器最终看到的是用户列表页面，或者一个 JSON 接口响应。</p>
+<h4 id="图表理解-6">图表理解
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>步骤</th>
+          <th>输入</th>
+          <th>输出</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>浏览器请求</td>
+          <td><code>/users</code></td>
+          <td>把请求发给后端</td>
+      </tr>
+      <tr>
+          <td>后端查询</td>
+          <td><code>SELECT * FROM users;</code></td>
+          <td>从数据库取数据</td>
+      </tr>
+      <tr>
+          <td>数据库返回</td>
+          <td>数据表结果</td>
+          <td>把结果返回后端</td>
+      </tr>
+      <tr>
+          <td>页面展示</td>
+          <td>后端响应</td>
+          <td>浏览器展示数据</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h2 id="五学习这一部分时最该记住的内容">五、学习这一部分时最该记住的内容
+</h2><p>如果你是 SQL 初学者，这一部分最应该记住的是下面这几句话：</p>
+<ol>
+<li><strong>数据库是装表的地方。</strong></li>
+<li><strong>表是分类存放数据的结构。</strong></li>
+<li><strong>字段是列，是属性。</strong></li>
+<li><strong>行是记录，是具体数据。</strong></li>
+<li><strong>Web 请求一般不会直接访问数据库，而是通过后端程序去执行 SQL。</strong></li>
+</ol>
+<h3 id="速记图">速记图
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">浏览器 → 后端 → SQL → 数据库 → 后端 → 浏览器
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="易混点对比">易混点对比
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>容易混淆的概念</th>
+          <th>正确认识</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>数据库 和 表</td>
+          <td>数据库包含表，表不是数据库</td>
+      </tr>
+      <tr>
+          <td>字段 和 行</td>
+          <td>字段是列名，行是一条记录</td>
+      </tr>
+      <tr>
+          <td>浏览器 和 数据库</td>
+          <td>浏览器不直接连数据库，通常通过后端访问</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/sql/">SQL</a>
+        
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+        
+            <a href="/tags/mysql/">MySQL</a>
+        
+            <a href="/tags/web%E5%BC%80%E5%8F%91/">Web开发</a>
+        
+            <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2026 Doucube
+    </section>
+    
+    <section class="powerby">
+        
+            951413njF <br/>
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
